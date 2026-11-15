@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local development (never commit real values)
+SESSION_SECRET=replace-with-64-random-characters
+PASSWORD_PEPPER=replace-with-64-random-characters
+RESEND_API_KEY=re_xxxxxxxxx

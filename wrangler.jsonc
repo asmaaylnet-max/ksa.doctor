@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ksa-doctor",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-11-01",
+  "account_id": "9832075498101f6bbff93a4499a9a56b",
+  "routes": [
+    { "pattern": "ksa.doctor", "custom_domain": true },
+    { "pattern": "www.ksa.doctor", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ksa-doctor-db",
+      "database_id": "7a35e891-1670-47bc-bc45-a2c9cbcb55f2",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "ksa-doctor-media"
+    }
+  ],
+  "vars": {
+    "APP_URL": "https://ksa.doctor",
+    "FROM_EMAIL": "أطباء المملكة <no-reply@ksa.doctor>",
+    "ADMIN_EMAIL": "asmaayl.net@gmail.com",
+    "ENVIRONMENT": "production"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
