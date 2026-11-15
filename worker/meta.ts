@@ -109,7 +109,7 @@ export async function serveApp(c: Context<AppEnv>): Promise<Response> {
   const path = url.pathname;
   const appUrl = c.env.APP_URL.replace(/\/$/, '');
 
-  if (/\.[a-z0-9]{1,8}$/i.test(path) || path.startsWith('/assets/') || path.startsWith('/brand/') || path.startsWith('/fonts/')) {
+  if (/\.[a-z0-9]{1,12}$/i.test(path) || path.startsWith('/assets/') || path.startsWith('/brand/') || path.startsWith('/fonts/')) {
     return c.env.ASSETS.fetch(c.req.raw);
   }
 
