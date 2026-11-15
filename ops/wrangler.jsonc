@@ -1,0 +1,33 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "ksa-doctor-ops",
+  "main": "index.ts",
+  "compatibility_date": "2025-11-01",
+  "account_id": "9832075498101f6bbff93a4499a9a56b",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ksa-doctor-db",
+      "database_id": "7a35e891-1670-47bc-bc45-a2c9cbcb55f2"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BACKUPS",
+      "bucket_name": "ksa-doctor-backups"
+    }
+  ],
+  "vars": {
+    "APP_URL": "https://ksa.doctor",
+    "FROM_EMAIL": "أطباء المملكة <no-reply@ksa.doctor>",
+    "ADMIN_EMAIL": "asmaayl.net@gmail.com",
+    "CF_ACCOUNT_ID": "9832075498101f6bbff93a4499a9a56b",
+    "D1_DATABASE_ID": "7a35e891-1670-47bc-bc45-a2c9cbcb55f2"
+  },
+  "triggers": {
+    "crons": ["*/15 * * * *", "15 2 * * *"]
+  },
+  "observability": {
+    "enabled": true
+  }
+}

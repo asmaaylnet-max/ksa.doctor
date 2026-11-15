@@ -13,7 +13,10 @@
     "deploy": "npm run build:fast && wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply ksa-doctor-db --remote",
     "db:local": "wrangler d1 migrations apply ksa-doctor-db --local",
-    "assets": "node scripts/generate-assets.mjs"
+    "assets": "node scripts/generate-assets.mjs",
+    "ops:deploy": "wrangler deploy --config ops/wrangler.jsonc",
+    "ops:health": "node scripts/ops-run.mjs health",
+    "ops:backup": "node scripts/ops-run.mjs backup"
   },
   "dependencies": {
     "@fontsource/tajawal": "^5.1.1",

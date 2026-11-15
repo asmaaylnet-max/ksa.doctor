@@ -2,6 +2,8 @@
 """Build a branded Arabic PDF from docs/LAUNCH_READINESS.md."""
 from pathlib import Path
 import base64
+import os
+import subprocess
 import markdown
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -109,11 +111,11 @@ html = f"""<!doctype html>
   <section class="cover">
     <div class="top"><img class="emblem" src="data:image/png;base64,{emblem}" alt="" /><div class="brand">أطباء المملكة العربية السعودية<small>KSA.DOCTOR</small></div></div>
     <div class="rule"></div>
-    <div class="eyebrow">تقرير تنفيذي · الإصدار 1.0</div>
+    <div class="eyebrow">تقرير تنفيذي · الإصدار 1.1</div>
     <h1>جاهزية الإطلاق التجريبي</h1>
     <h2>منصة أطباء المملكة العربية السعودية</h2>
     <div class="slogan">رأس مال بشري سعودي نفخر به</div>
-    <div class="status">GO مشروط · جاهز للتجربة البشرية المحدودة</div>
+    <div class="status">GO · البريد والمراقبة والنسخ جاهزة</div>
     <div class="meta">
       <div><strong>أُعدّ لـ</strong>إسماعيل التميمي — الرئيس التنفيذي</div>
       <div><strong>التاريخ</strong>15 نوفمبر 2026</div>
@@ -125,3 +127,24 @@ html = f"""<!doctype html>
 """
 HTML_PATH.write_text(html, encoding="utf-8")
 print(HTML_PATH)
+
+chrome = os.environ.get("CHROME_PATH", "/usr/bin/chromium")
+if Path(chrome).exists():
+    subprocess.run(
+        [
+            chrome,
+            "--headless=new",
+            "--no-sandbox",
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--no-pdf-header-footer",
+            f"--print-to-pdf={PDF_PATH}",
+            HTML_PATH.as_uri(),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    print(PDF_PATH)
+else:
+    print(f"Chromium not found at {chrome}; PDF was not generated")

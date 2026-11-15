@@ -11,5 +11,3 @@ CREDENTIALS.txt
 scripts/.seed.sql
 
 .secrets/
-
-.secrets/

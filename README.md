@@ -8,7 +8,7 @@
 
 - **مباشر:** [https://ksa.doctor](https://ksa.doctor)
 - **GitHub:** [asmaaylnet-max/ksa.doctor](https://github.com/asmaaylnet-max/ksa.doctor)
-- **الإصدار:** جاهز للتجربة البشرية المحدودة (Amber) — البريد بانتظار مفتاح Resend.
+- **الإصدار:** جاهز للتجربة البشرية المحدودة — البريد والمراقبة والنسخ الاحتياطي مفعّلة ومختبرة.
 - **تقرير الجاهزية:** [`docs/LAUNCH_READINESS.md`](docs/LAUNCH_READINESS.md)
 
 ## أبرز القدرات
@@ -21,6 +21,7 @@
 - PWA: مانيفست وService Worker ورسالة تثبيت وتحديث، مع تجربة offline.
 - عربي افتراضي وRTL، دعم إنجليزي كامل، وضع داكن/فاتح، خط Tajawal محلي.
 - SEO: meta لكل ملف، Open Graph، JSON-LD Physician/WebSite، sitemap، robots، noindex للوحات الخاصة.
+- مراقبة Uptime كل 15 دقيقة مع تنبيه بريدي، ونسخ D1 يومي مشفّر إلى R2 خاص مع استبقاء 90 يومًا.
 
 ## التقنية
 
@@ -33,6 +34,7 @@ shared/     الأنواع والمخططات والبيانات المشترك�
 migrations/ مخطط D1
 public/     الأصول والهوية البصرية
 docs/       تقارير البناء والجاهزية ولقطات QA
+ops/        عامل Cloudflare مستقل للمراقبة والنسخ الاحتياطي
 ```
 
 ## التشغيل المحلي
@@ -52,6 +54,9 @@ npm run build                    # بناء الإنتاج + PWA
 npx wrangler deploy              # نشر Worker على ksa.doctor
 npx wrangler tail                # متابعة السجلات
 npx wrangler d1 migrations apply ksa-doctor-db --remote
+npm run ops:deploy               # نشر عامل المراقبة والنسخ
+npm run ops:health               # فحص صحة الإنتاج يدويًا
+npm run ops:backup               # إنشاء نسخة احتياطية يدوية
 ```
 
 ## الأسرار
@@ -65,6 +70,28 @@ npx wrangler secret put RESEND_API_KEY
 ```
 
 `.gitignore` يستثني `.secrets/` و`CREDENTIALS.txt` و`.dev.vars` و`node_modules/` و`dist/`.
+
+عامل `ops` يحتاج أسراره المستقلة:
+
+```bash
+npx wrangler secret put CF_API_TOKEN --config ops/wrangler.jsonc
+npx wrangler secret put RESEND_API_KEY --config ops/wrangler.jsonc
+npx wrangler secret put BACKUP_KEY --config ops/wrangler.jsonc
+npx wrangler secret put OPS_TRIGGER_TOKEN --config ops/wrangler.jsonc
+```
+
+## المراقبة والنسخ الاحتياطي
+
+- `ksa-doctor-ops` يفحص `https://ksa.doctor/api/health` كل 15 دقيقة ويرسل تنبيهًا بريديًا عند الفشل.
+- ينسخ D1 يوميًا الساعة 02:15 UTC إلى `ksa-doctor-backups/d1/` بعد gzip وتشفير AES-256-GCM.
+- سياسة R2 تحذف النسخ تلقائيًا بعد 90 يومًا.
+- لفك تشفير نسخة قبل الاستعادة:
+
+```bash
+node scripts/restore-backup.mjs backup.sql.gz.enc backup.sql
+```
+
+الأداة لا تستعيد تلقائيًا؛ راجع SQL وأخذ نسخة جديدة قبل أي استعادة يدوية.
 
 ## الترخيص
 
